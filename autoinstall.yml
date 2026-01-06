@@ -1,0 +1,37 @@
+#cloud-config
+autoinstall:
+  version: 1
+  identity:
+    realname: 'Joab'
+    hostname: ubuntu-desktop
+    username: joab
+    password: $6$ulMypDavIlNqHZiO$iSFeHtqvgYPzoLvaa2FEh4mixlirh2LoIgNXX0LUaW0ciakxBn6WElvv.mIhYJ7IXvjB5Qh6MjS4uqBxJCpKI1
+  locale: pt_BR.utf8
+  keyboard:
+    layout: br
+  timezone: "America/Sao_Paulo"
+  packages:
+    - git
+    - wget
+    - curl
+    - flatpak
+    - snapd
+  updates: all
+  drivers:
+    install: true
+  codecs:
+    install: true
+  snaps:
+    - name: spotify
+      channel: stable
+      classic: false
+  late-commands:
+    # Configura Flathub dentro do sistema instalado
+    - curtin in-target --target=/target -- flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+
+    # Baixa e executa seu install.sh hospedado no GitHub (substitua pelo link Raw real)
+    - curtin in-target --target=/target -- wget -O /home/joab/install.sh https://raw.githubusercontent.com/SEUUSUARIO/repositorio/main/install.sh
+    - curtin in-target --target=/target -- chmod +x /home/joab/install.sh
+    - curtin in-target --target=/target -- bash /home/joab/install.sh
+  shutdown: reboot
+
